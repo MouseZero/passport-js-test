@@ -6,9 +6,21 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: '354432087605-ni72pmrldle37g5cj4a126b9elflqibm.apps.googleusercontent.com',
+    clientSecret: 'sTIAVFOpJEwH7i2R4zg7IGUr',
+    callbackURL: 'http://localhost:3000/auth/google/callback'
+  },
+  function(req, accessToken, refreshToken, profile, done){
+    done(null, profile);
+  }
+));
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var auth =  require('./routes/auth');
 
 var app = express();
 
@@ -37,6 +49,7 @@ passport.deserializeUser(function(user, done){
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/auth', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
